@@ -1,0 +1,25 @@
+body{
+	height: 100%;
+}
+.scroll{
+	height:100%;
+}
+.cam-button{
+	display: inline-block;
+	width:50%;
+	background-color:#2980b9;
+	color: white;
+	height:50px;
+	position: absolute;
+	bottom:0px;
+	border:none;
+}
+
+.right{
+	right:0px;
+}
+
+.left{
+	left:0px;
+	border-right:1px solid white;
+}
