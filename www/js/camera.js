@@ -85,13 +85,33 @@ function uploadPhoto() {
     options.fileKey = "file";
     options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
     options.mimeType = "image/jpeg";
-    var params = new Object();
-    options.params = params;
+    options.headers = {
+       Connection: "close"
+    };
     options.chunkedMode = false;
-    var ft = new FileTransfer();
-    ft.upload(imageURI, "http://patrick-cull.com/map/php/upload.php", win, fail, options, true);
 
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+    var params = new Object();
+
+    navigator.geolocation.getCurrentPosition( 
+        function(position) { 
+          params.lon = position.coords.longitude;
+          params.lat = position.coords.latitude;
+          alert(params.lon + ',' + params.lat); 
+
+          options.params = params;
+
+          var ft = new FileTransfer();
+          ft.upload(imageURI, "http://patrick-cull.com/map/php/upload.php", win, fail, options, true);
+        }, 
+
+        function() { 
+          alert('Error getting location'); 
+        }
+    );
+
+    //navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
 }
 
 function win(r) {
