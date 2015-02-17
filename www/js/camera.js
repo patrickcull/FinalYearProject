@@ -1,90 +1,134 @@
+var pictureSource; // picture source
+var destinationType; // sets the format of returned value
+// Wait for device API libraries to load
+//
+document.addEventListener("deviceready", onDeviceReady, false);
+// device APIs are available
+//
 
-    var pictureSource;   // picture source
-    var destinationType; // sets the format of returned value
+function onDeviceReady() {
+    pictureSource = navigator.camera.PictureSourceType;
+    destinationType = navigator.camera.DestinationType;
+}
+// Called when a photo is successfully retrieved
+//
 
-    // Wait for device API libraries to load
+function onPhotoDataSuccess(imageURI) {
+    // Uncomment to view the base64-encoded image data
+    console.log(imageURI);
+    alert(imageURI);
+    // Get image handle
     //
-    document.addEventListener("deviceready",onDeviceReady,false);
-
-    // device APIs are available
+    var cameraImage = document.getElementById('image');
+    // Unhide image elements
     //
-    function onDeviceReady() {
-        pictureSource=navigator.camera.PictureSourceType;
-        destinationType=navigator.camera.DestinationType;
-    }
-
-    // Called when a photo is successfully retrieved
+    cameraImage.style.display = 'block';
+    // Show the captured photo
+    // The inline CSS rules are used to resize the image
     //
-    function onPhotoDataSuccess(imageData) {
-      // Uncomment to view the base64-encoded image data
-      // console.log(imageData);
+    cameraImage.src = imageURI;
+}
+// Called when a photo is successfully retrieved
+//
 
-      // Get image handle
-      //
-      var smallImage = document.getElementById('smallImage');
-      var largeImage = document.getElementById('largeImage');
-
-
-      // Unhide image elements
-      //
-      largeImage.style.display = 'none';
-      smallImage.style.display = 'block';
-
-      // Show the captured photo
-      // The in-line CSS rules are used to resize the image
-      //
-      smallImage.src = "data:image/jpeg;base64," + imageData;
-    }
-
-    // Called when a photo is successfully retrieved
+function onPhotoURISuccess(imageURI) {
+    // Uncomment to view the image file URI
+    console.log(imageURI);
+    // Get image handle
     //
-    function onPhotoURISuccess(imageURI) {
-      // Uncomment to view the image file URI
-      // console.log(imageURI);
-
-      // Get image handle
-      //
-      var smallImage = document.getElementById('smallImage');
-      var largeImage = document.getElementById('largeImage');
-
-      // Unhide image elements
-      //
-      smallImage.style.display = 'none';
-      largeImage.style.display = 'block';
-
-      // Show the captured photo
-      // The in-line CSS rules are used to resize the image
-      //
-      largeImage.src = imageURI;
-    }
-
-    // A button will call this function
+    var galleryImage = document.getElementById('image');
+    // Unhide image elements
     //
-    function capturePhoto() {
-      // Take picture using device camera and retrieve image as base64-encoded string
-      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
-        destinationType: destinationType.DATA_URL });
-    }
-
-    // A button will call this function
+    galleryImage.style.display = 'block';
+    // Show the captured photo
+    // The inline CSS rules are used to resize the image
     //
-    function capturePhotoEdit() {
-      // Take picture using device camera, allow edit, and retrieve image as base64-encoded string
-      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
-        destinationType: destinationType.DATA_URL });
-    }
+    galleryImage.src = imageURI;
+}
+// A button will call this function
+//
 
-    // A button will call this function
-    //
-    function getPhoto(source) {
-      // Retrieve image file location from specified source
-      navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50,
+function capturePhoto() {
+    // Take picture using device camera and retrieve image as base64-encoded string
+    navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
+        quality: 80,
+        targetWidth: 600,
+        targetHeight: 600,
         destinationType: destinationType.FILE_URI,
-        sourceType: source });
+        saveToPhotoAlbum: false
+    });
+}
+// A button will call this function
+//
+
+function getPhoto(source) {
+    // Retrieve image file location from specified source
+    navigator.camera.getPicture(onPhotoURISuccess, onFail, {
+        quality: 80,
+        targetWidth: 600,
+        targetHeight: 600,
+        destinationType: destinationType.FILE_URI,
+        sourceType: source
+    });
+}
+// Called if something bad happens.
+//
+
+function onFail(message) {
+    alert('Failed because: ' + message);
+}
+
+function uploadPhoto() {
+    var img = document.getElementById('image');
+    var imageURI = img.src;
+    var options = new FileUploadOptions();
+    options.fileKey = "file";
+    options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+    options.mimeType = "image/jpeg";
+    var params = new Object();
+    options.params = params;
+    options.chunkedMode = false;
+    var ft = new FileTransfer();
+    ft.upload(imageURI, "http://patrick-cull.com/map/php/upload.php", win, fail, options, true);
+
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+}
+
+function win(r) {
+   alert("success");
+   alert("Sent = " + r.bytesSent);
+}
+
+function fail(error) {
+   alert("error");
+   switch (error.code) {
+     case FileTransferError.FILE_NOT_FOUND_ERR:
+        alert("Photo file not found");
+        break;
+     case FileTransferError.INVALID_URL_ERR:
+       alert("Bad Photo URL");
+       break;
+     case FileTransferError.CONNECTION_ERR:
+       alert("Connection error");
+       break;
+   }
+   alert("An error has occurred: Code = " + error.code);
+}
+
+ function onSuccess(position) {
+           alert('Latitude: '          + position.coords.latitude          + '\n' +
+          'Longitude: '         + position.coords.longitude         + '\n' +
+          'Altitude: '          + position.coords.altitude          + '\n' +
+          'Accuracy: '          + position.coords.accuracy          + '\n' +
+          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+          'Heading: '           + position.coords.heading           + '\n' +
+          'Speed: '             + position.coords.speed             + '\n' +
+          'Timestamp: '         + position.timestamp                + '\n');
     }
 
-    // Called if something bad happens.
+    // onError Callback receives a PositionError object
     //
-    function onFail(message) {
-      alert('Failed because: ' + message);
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
     }
