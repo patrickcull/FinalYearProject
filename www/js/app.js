@@ -56,6 +56,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         controller: 'LoginCtrl'
     })
 
+    .state('create',{
+        url:'/signup',
+        templateUrl:'templates/signup.html',
+        controller: 'CreateCtrl'
+    })
+
     .state('tab.camera', {
       url: '/camera',
       views: {
