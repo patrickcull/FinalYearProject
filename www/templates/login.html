@@ -1,0 +1,24 @@
+  <ion-view title="Login">
+
+    <ion-content class="has-header">
+      <div class="list list-inset">
+
+       <label class="item item-input">
+         <input class="form-control" type="text" ng-model="user.username" placeholder="Enter Username">
+       </label>
+
+       <label class="item item-input">
+         <input type="text" ng-model="user.email" placeholder="Enter Your Email">
+       </label>
+
+       <label class="item item-input">
+         <input class="form-control" type="password" ng-model="user.password" placeholder="Enter Your Password">
+       </label>
+
+       <button class="button button-block button-positive button-dark" ng-click="signUp(user)">SignUp</button><br>
+       <span>{{responseMessage}}</span>
+       <span>{{localstorage.userinfo.username}}</span>
+     </div>
+    </ion-content>
+
+  </ion-view>

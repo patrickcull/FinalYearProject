@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $state) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -18,6 +18,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    $state.go('login');
   });
 })
 
@@ -46,6 +48,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
           controller: 'DashCtrl'
         }
       }
+    })
+
+    .state('login',{
+        url:'/login',
+        templateUrl:'templates/login.html',
+        controller: 'LoginCtrl'
     })
 
     .state('tab.camera', {
@@ -87,8 +95,23 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     });
 
+
+
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/dash');
 
 });
+
+//Firebase Login
+angular.module('socialAuth', ['ionic','firebase']); 
+
+//Login Config
+angular.module('socialAuth').config(['$stateProvider',function($stateProvider){
+
+    $stateProvider.state('login',{
+        url:'/login',
+        templateUrl:'templates/login.html'
+    });
+
+}]);
 
