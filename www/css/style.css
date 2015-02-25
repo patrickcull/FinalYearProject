@@ -7,12 +7,27 @@ body{
 .cam-button{
 	display: inline-block;
 	width:50%;
-	background-color:#2980b9;
+	background-color: rgba(52, 73, 94,0.7);
 	color: white;
 	height:50px;
 	position: absolute;
 	bottom:0px;
 	border:none;
+}
+
+#uploadButton{
+	position: absolute;
+	top:0;
+	width:100%;
+
+}
+
+.bottom{
+	bottom: 0px;
+	position: absolute;
+}
+.button-bar .button{
+	border-width: 1px;
 }
 
 .right{

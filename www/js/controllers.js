@@ -16,16 +16,17 @@ angular.module('starter.controllers', [])
 })
 
 .controller('AccountCtrl', function($scope) {
+	$scope.username =  window.localStorage.getItem("uname");
 })
 
 
 .controller('LoginCtrl', function($scope, $http, $state) {
 
-$scope.create = function(){
-	$state.go('create');
-}
+	$scope.create = function(){
+		$state.go('create');
+	}
 
-$scope.login = function (user) {
+	$scope.login = function (user) {
 
         var request = $http({
             method: "post",

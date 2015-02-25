@@ -65,8 +65,8 @@ function getPhoto(source) {
     // Retrieve image file location from specified source
     navigator.camera.getPicture(onPhotoURISuccess, onFail, {
         quality: 80,
-        targetWidth: 600,
-        targetHeight: 600,
+        //targetWidth: 600,
+        //targetHeight: 600,
         destinationType: destinationType.FILE_URI,
         sourceType: source
     });
@@ -79,6 +79,7 @@ function onFail(message) {
 }
 
 function uploadPhoto() {
+    alert('Fire One'); 
     var img = document.getElementById('image');
     var imageURI = img.src;
     var options = new FileUploadOptions();
