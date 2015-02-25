@@ -27,7 +27,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
+.config(['$ionicConfigProvider', function($ionicConfigProvider) {
+
+$ionicConfigProvider.tabs.position('bottom'); //other values: top
+
+}])
+
 .config(function($stateProvider, $urlRouterProvider) {
+
 
   // Each state's controller can be found in controllers.js
   $stateProvider
@@ -52,18 +59,21 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     })
 
     .state('login',{
+        cache: false,
         url:'/login',
         templateUrl:'templates/login.html',
         controller: 'LoginCtrl'
     })
 
     .state('create',{
+        cache: false,
         url:'/signup',
         templateUrl:'templates/signup.html',
         controller: 'CreateCtrl'
     })
 
     .state('tab.camera', {
+      cache: false,
       url: '/camera',
       views: {
         'tab-camera': {
@@ -74,6 +84,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     })
 
     .state('tab.friends', {
+      cache: false,
       url: '/friends',
       views: {
         'tab-friends': {
@@ -93,6 +104,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     })
 
     .state('tab.account', {
+      cache: false,
       url: '/account',
       views: {
         'tab-account': {
@@ -108,17 +120,4 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   $urlRouterProvider.otherwise('/tab/dash');
 
 });
-
-//Firebase Login
-angular.module('socialAuth', ['ionic','firebase']); 
-
-//Login Config
-angular.module('socialAuth').config(['$stateProvider',function($stateProvider){
-
-    $stateProvider.state('login',{
-        url:'/login',
-        templateUrl:'templates/login.html'
-    });
-
-}]);
 

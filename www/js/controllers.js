@@ -17,6 +17,11 @@ angular.module('starter.controllers', [])
 
 .controller('AccountCtrl', function($scope) {
 	$scope.username =  window.localStorage.getItem("uname");
+
+	$scope.logout = function(){
+		//Clear the set username
+		window.localStorage.setItem("uname", "");
+	}
 })
 
 
@@ -24,7 +29,7 @@ angular.module('starter.controllers', [])
 
 	$scope.create = function(){
 		$state.go('create');
-	}
+	};
 
 	$scope.login = function (user) {
 
@@ -39,25 +44,16 @@ angular.module('starter.controllers', [])
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
 
-
-        window.localStorage.setItem("uname", user.uname);
-        $scope.username =  window.localStorage.getItem("uname");
-
-
-
         /* Successful HTTP post request or not */
         request.success(function(data) {
             if(data == "1"){
-             $scope.responseMessage = "User Found, Logging in now...";
-
 			 $state.go('tab.dash');
-
-            }
-            if(data == "2"){
-             $scope.responseMessage = "Create Account failed";
+			 $scope.responseMessage = "";
+			 window.localStorage.setItem("uname", user.uname);
+        	 $scope.username =  window.localStorage.getItem("uname");
             }
             else if(data == "0") {
-             $scope.responseMessage = "No user found. Please try again."
+             $scope.responseMessage = "No user found. Please try again, or create a new account."
             }  
         });
 }
@@ -66,7 +62,6 @@ angular.module('starter.controllers', [])
 
 .controller('CreateCtrl', function($scope, $http, $state) {
 
-	//$scope.responseMessage = "Please Login."
 
 $scope.signUp = function (user) {
 
@@ -92,10 +87,6 @@ $scope.signUp = function (user) {
         request.success(function(data) {
             if(data == "1"){
              $scope.responseMessage = "Successfully Created Account";
-
-             /*window.localStorage['userinfo'] = JSON.stringify(data);
-
-			 var data = JSON.parse(window.localStorage['data'] || '{}');*/
 
 			 $state.go('tab.dash');
 
