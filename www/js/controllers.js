@@ -6,9 +6,18 @@ angular.module('starter.controllers', [])
 .controller('CamCtrl', function($scope) {
 })
 
-.controller('FriendsCtrl', function($scope, Friends) {
-  $scope.friends = Friends.all();
+.controller('FriendsCtrl', function($scope, $http, Friends) {
+  //$scope.friends = Friends.all();
   $scope.username =  window.localStorage.getItem("uname");
+
+
+    //Get list of friends
+  $http.get('http://patrick-cull.com/map/php/getfriends.php')
+  .success(function(data) {
+        $scope.pals = data;
+   });
+
+
 })
 
 .controller('FriendDetailCtrl', function($scope, $stateParams, Friends) {

@@ -2,9 +2,10 @@
 <ion-view title="Friends">
   <ion-content>
     <ion-list>
-      <ion-item ng-repeat="friend in friends" type="item-text-wrap" href="#/tab/friend/{{friend.id}}">
-        {{friend.name}}
+      <ion-item ng-repeat="pal in pals" type="item-text-wrap" >
+        {{pal.uname}}
       </ion-item>
     </ion-list>
+    {{test}}
   </ion-content>
 </ion-view>
