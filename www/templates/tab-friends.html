@@ -1,11 +1,34 @@
 
 <ion-view title="Friends">
-  <ion-content>
-    <ion-list>
-      <ion-item ng-repeat="pal in pals" type="item-text-wrap" >
-        {{pal.uname}}
-      </ion-item>
-    </ion-list>
-    {{test}}
-  </ion-content>
+	<ion-nav-buttons side="right">
+	  <button class="button icon ion-person-add button-light" ng-click="openModal()" >
+	    Add Friend
+	  </button>
+	</ion-nav-buttons>
+
+
+	<ion-content>
+
+
+		<div class="bar item-input-inset">
+		    <label class="item-input-wrapper">
+		        <i class="icon ion-ios7-search placeholder-icon"></i>
+		        <input type="search" placeholder="Search" ng-model="searchFilter" ng-change="scrollTop()">
+		    </label>
+		</div>
+
+		<ion-list>
+			<ion-item ng-repeat="pal in pals | filter:searchFilter" item="pals">
+			    
+			    <div class="item-button-right">
+			     {{pal.fname}}
+			  	  <button class="button button-positive">
+			     	 <i class="icon ion-ios7-telephone"></i>
+			  	  </button>
+
+			  	</div>
+		  	</ion-item>
+		</ion-list>
+
+  	</ion-content>
 </ion-view>
