@@ -1,9 +1,69 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {
+.controller('DashCtrl', function($scope, $sce) {
+	//The current user will be sent to the map page using POST
+  	$scope.username =  window.localStorage.getItem("uname");
+  	$scope.url = "http://patrick-cull.com/map/index.php?uname=" + $scope.username;
+  	//$scope.url = "http://patrick-cull.com/map/index.php";
+  	$scope.mapurl = $sce.trustAsResourceUrl($scope.url);
+
 })
 
-.controller('CamCtrl', function($scope) {
+.controller('CamCtrl', function($scope, $ionicLoading) {
+
+	$scope.showLoading = function() {
+	    $ionicLoading.show({
+	      template: 'Uploading...'
+	    });
+  	};
+	$scope.hideLoading = function(){
+	    $ionicLoading.hide();
+	};
+
+
+
+    $scope.username =  window.localStorage.getItem("uname");
+
+    $scope.uploadPhoto = function() {
+    //alert('Uploading Photo...');     
+    $scope.showLoading();
+    var img = document.getElementById('image');
+    var imageURI = img.src;
+    var options = new FileUploadOptions();
+    options.fileKey = "file";
+    options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+    options.mimeType = "image/jpeg";
+    options.headers = {
+       Connection: "close"
+    };
+    options.chunkedMode = false;
+
+    var params = new Object();
+
+    //$scope.username =  window.localStorage.getItem("uname");
+
+    navigator.geolocation.getCurrentPosition( 
+        function(position) { 
+          params.lon = position.coords.longitude;
+          params.lat = position.coords.latitude;
+          params.uname = $scope.username;
+          alert(params.lon + ',' + params.lat); 
+
+          options.params = params;
+
+          var ft = new FileTransfer();
+          ft.upload(imageURI, "http://patrick-cull.com/map/php/upload.php", win, fail, options, true);
+    	  $scope.hideLoading();
+
+        }, 
+
+        function() { 
+          alert('Error getting location'); 
+        }
+    );
+
+}
+
 })
 
 .controller('FriendsCtrl', function($scope, $http, $ionicModal) {
@@ -48,6 +108,7 @@ angular.module('starter.controllers', [])
 	    $scope.modal.remove();
 	  });
 
+	  //Function to add friend.
 	  $scope.addFriend = function(friend){
         var request = $http({
             method: "post",
@@ -70,7 +131,10 @@ angular.module('starter.controllers', [])
             }  
              else if(data == "2") {
              $scope.responseMessage = "Already friends with this user :)"
-            } 
+            }
+            else if(data == "3"){
+             $scope.responseMessage = "You can't add yourself as a friend!"
+            }
         });
 
 	  }

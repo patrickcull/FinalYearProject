@@ -9,7 +9,6 @@
 
 	<ion-content>
 
-
 		<div class="bar item-input-inset">
 		    <label class="item-input-wrapper">
 		        <i class="icon ion-ios7-search placeholder-icon"></i>
@@ -18,14 +17,13 @@
 		</div>
 
 		<ion-list>
-			<ion-item ng-repeat="pal in pals | filter:searchFilter" item="pals">
-			    
+			<ion-item ng-repeat="pal in pals | filter:searchFilter | orderBy:'fname'" item="pals">
 			    <div class="item-button-right">
 			     {{pal.fname}}
+			     {{searchFilter}}
 			  	  <button class="button button-positive">
 			     	 <i class="icon ion-ios7-telephone"></i>
 			  	  </button>
-
 			  	</div>
 		  	</ion-item>
 		</ion-list>

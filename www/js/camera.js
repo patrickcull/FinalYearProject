@@ -78,42 +78,46 @@ function onFail(message) {
     alert('Failed because: ' + message);
 }
 
-function uploadPhoto() {
-    alert('Fire One'); 
-    var img = document.getElementById('image');
-    var imageURI = img.src;
-    var options = new FileUploadOptions();
-    options.fileKey = "file";
-    options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
-    options.mimeType = "image/jpeg";
-    options.headers = {
-       Connection: "close"
-    };
-    options.chunkedMode = false;
+// function uploadPhoto(username) {
+//     alert('Fire One'); 
+//     var img = document.getElementById('image');
+//     var imageURI = img.src;
+//     var options = new FileUploadOptions();
+//     options.fileKey = "file";
+//     options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+//     options.mimeType = "image/jpeg";
+//     options.headers = {
+//        Connection: "close"
+//     };
+//     options.chunkedMode = false;
 
 
-    var params = new Object();
+//     var params = new Object();
 
-    navigator.geolocation.getCurrentPosition( 
-        function(position) { 
-          params.lon = position.coords.longitude;
-          params.lat = position.coords.latitude;
-          alert(params.lon + ',' + params.lat); 
+//     //$scope.username =  window.localStorage.getItem("uname");
+//     alert(username);
 
-          options.params = params;
+//     navigator.geolocation.getCurrentPosition( 
+//         function(position) { 
+//           params.lon = position.coords.longitude;
+//           params.lat = position.coords.latitude;
+//           params.username = $scope.username;
+//           alert(params.lon + ',' + params.lat); 
 
-          var ft = new FileTransfer();
-          ft.upload(imageURI, "http://patrick-cull.com/map/php/upload.php", win, fail, options, true);
-        }, 
+//           options.params = params;
 
-        function() { 
-          alert('Error getting location'); 
-        }
-    );
+//           var ft = new FileTransfer();
+//           ft.upload(imageURI, "http://patrick-cull.com/map/php/upload.php", win, fail, options, true);
+//         }, 
 
-    //navigator.geolocation.getCurrentPosition(onSuccess, onError);
+//         function() { 
+//           alert('Error getting location'); 
+//         }
+//     );
 
-}
+//     //navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+// }
 
 function win(r) {
    alert("success");

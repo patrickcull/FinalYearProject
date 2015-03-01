@@ -49,6 +49,7 @@ $ionicConfigProvider.tabs.position('bottom'); //other values: top
     // Each tab has its own nav history stack:
 
     .state('tab.dash', {
+      cache: false,
       url: '/dash',
       views: {
         'tab-dash': {
