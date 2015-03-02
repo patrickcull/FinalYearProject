@@ -94,12 +94,24 @@ $ionicConfigProvider.tabs.position('bottom'); //other values: top
         }
       }
     })
+
     .state('tab.friend-detail', {
       url: '/friend/:friendId',
       views: {
         'tab-friends': {
           templateUrl: 'templates/friend-detail.html',
           controller: 'FriendDetailCtrl'
+        }
+      }
+    })
+
+    .state('tab.groups', {
+      cache: false,
+      url: '/groups',
+      views: {
+        'tab-groups': {
+          templateUrl: 'templates/tab-groups.html',
+          controller: 'GroupsCtrl'
         }
       }
     })

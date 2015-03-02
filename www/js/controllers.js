@@ -85,10 +85,8 @@ angular.module('starter.controllers', [])
 		$scope.pals = data;
 	});
 
-
-
 	//The following code handles the modal popup
-	$ionicModal.fromTemplateUrl('templates/addFriendModal.html', {
+	$ionicModal.fromTemplateUrl('templates/modals/addFriendModal.html', {
 	    scope: $scope,
 	    animation: 'slide-in-up',
 	    focusFirstInput: true
@@ -140,6 +138,125 @@ angular.module('starter.controllers', [])
 	  }
 
 
+})
+
+.controller('GroupsCtrl', function($scope, $http, $ionicModal) {
+  $scope.username =  window.localStorage.getItem("uname");
+	
+	//Get groups current user belongs to, and return query data on success.
+	var request = $http({
+	    method: "post",
+	    url: "http://patrick-cull.com/map/php/getgroups.php",
+	    crossDomain : true,
+	    data: {
+	        'username':  $scope.username,
+		},
+	    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+	});
+
+	request.success(function(data) {
+		$scope.groups = data;
+	});
+
+	//The following code handles the modal popup
+	$ionicModal.fromTemplateUrl('templates/modals/joinGroupModal.html', {
+	    scope: $scope,
+	    animation: 'slide-in-up',
+	    focusFirstInput: true
+	  }).then(function(modal) {
+	    $scope.joinModal = modal;
+	  })
+
+	$ionicModal.fromTemplateUrl('templates/modals/createGroupModal.html', {
+	    scope: $scope,
+	    animation: 'slide-in-up',
+	    focusFirstInput: true
+	  }).then(function(modal) {
+	    $scope.createModal = modal;
+	  })   
+
+	  $scope.openModal = function(index) {
+	  	if(index == 1){
+	  		$scope.joinModal.show();
+	  	}
+	  	else{
+	  		$scope.createModal.show();
+	  	}
+	  };
+
+	  $scope.closeModal = function(index) {
+	  	$scope.responseMessage = "";
+	  	if(index == 1){
+	  		$scope.joinModal.hide();
+	  	}
+	  	else{
+	  		$scope.createModal.hide();
+	  	}
+	  };
+
+	  $scope.$on('$destroy', function() {
+	    $scope.modal.remove();
+	  });
+
+	  //Function to join group. The username and group ID will be inserted into the group memebers table.
+	  $scope.joinGroup = function(group){
+        var request = $http({
+            method: "post",
+            url: "http://patrick-cull.com/map/php/joinGroup.php",
+            crossDomain : true,
+            data: {
+	            'username': $scope.username,
+	            'gid': group.gid,
+        	},
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        });
+
+
+
+        /* Successful HTTP post request or not */
+        request.success(function(data) {
+            if(data == "1"){
+			 $scope.responseMessage = "Added to group!";
+            }
+            else if(data == "0") {
+             $scope.responseMessage = "No group found. Please ensure group ID is correct."
+            }  
+             else if(data == "2") {
+             $scope.responseMessage = "Already part of this group. :)"
+            }
+        });
+
+	  }
+
+	   $scope.createGroup = function(group){
+        var request = $http({
+            method: "post",
+            url: "http://patrick-cull.com/map/php/createGroup.php",
+            crossDomain : true,
+            data: {
+	            'gname': group.gname,
+	            'gid': group.gid,
+	            'username': $scope.username,
+        	},
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        });
+
+        /* Successful HTTP post request or not */
+        request.success(function(data) {
+            if(data == "1"){
+			 $scope.responseMessage = "Created Group!";
+            }
+            else if(data == "0") {
+             $scope.responseMessage = "Groud ID already in use. Try another."
+            }  
+             else if(data == "2") {
+             $scope.responseMessage = "Already part of this group. :)"
+            }
+        });
+
+	  }
+
+  
 })
 
 .controller('FriendDetailCtrl', function($scope, $stateParams, Friends) {

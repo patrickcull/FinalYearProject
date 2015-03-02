@@ -22,13 +22,10 @@ body{
 
 }
 
-/*.modal{
-	margin-top: 10%;
-	width: 80%; 
-	height: 30%;
-	margin-bottom:60%;
-    margin-left:-40%; 
-}*/
+.modal{
+	min-height:250px !important;
+	top: 50px !important;
+}
 
 .bottom{
 	bottom: 0px;
