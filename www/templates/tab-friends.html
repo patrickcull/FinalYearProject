@@ -14,11 +14,11 @@
 	    </label>
 
 		<ion-list>
-			<ion-item ng-repeat="pal in pals | filter:searchFilter | orderBy:'fname'" item="pals">
+			<ion-item href="#/tab/friend/{{pal.fname}}" ng-repeat="pal in pals | filter:searchFilter | orderBy:'fname'" item="pals">
 			    <div class="item-button-right">
 			     {{pal.fname}}
-			  	  <button class="button button-positive">
-			     	 <i class="icon ion-ios7-telephone"></i>
+			  	  <button class="button button-assertive" ng-click="deleteFriend(pal.fname)">
+			     	 <i class="icon ion-close"></i>
 			  	  </button>
 			  	</div>
 		  	</ion-item>

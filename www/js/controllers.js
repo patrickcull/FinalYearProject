@@ -4,7 +4,6 @@ angular.module('starter.controllers', [])
 	//The current user will be sent to the map page using POST
   	$scope.username =  window.localStorage.getItem("uname");
   	$scope.url = "http://patrick-cull.com/map/index.php?uname=" + $scope.username;
-  	//$scope.url = "http://patrick-cull.com/map/index.php";
   	$scope.mapurl = $sce.trustAsResourceUrl($scope.url);
 
 })
@@ -66,7 +65,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('FriendsCtrl', function($scope, $http, $ionicModal) {
+.controller('FriendsCtrl', function($scope, $http, $ionicModal, $ionicPopup) {
   //$scope.friends = Friends.all();
   $scope.username =  window.localStorage.getItem("uname");
 
@@ -137,10 +136,38 @@ angular.module('starter.controllers', [])
 
 	  }
 
+	  $scope.deleteFriend = function(fname){
+
+		var confirmPopup = $ionicPopup.confirm({
+		     title: 'Confirm Delete',
+		     template: 'Are you sure you want to delete "' + fname + '" as a friend?'
+		   });
+		   confirmPopup.then(function(res) {
+		     if(res) {
+
+			    var request = $http({
+		            method: "post",
+		            url: "http://patrick-cull.com/map/php/deleteFriend.php",
+		            crossDomain : true,
+		            data: {
+			            'username': $scope.username,
+			            'fname': fname,
+		        	},
+		            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        		});
+
+		     } 
+		     else {
+		       console.log('You are not sure');
+		     }
+		   });
+
+	  }
+
 
 })
 
-.controller('GroupsCtrl', function($scope, $http, $ionicModal) {
+.controller('GroupsCtrl', function($scope, $http, $ionicModal, $ionicPopup) {
   $scope.username =  window.localStorage.getItem("uname");
 	
 	//Get groups current user belongs to, and return query data on success.
@@ -211,8 +238,6 @@ angular.module('starter.controllers', [])
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
 
-
-
         /* Successful HTTP post request or not */
         request.success(function(data) {
             if(data == "1"){
@@ -256,11 +281,58 @@ angular.module('starter.controllers', [])
 
 	  }
 
+	$scope.leaveGroup = function(group){
+
+		var confirmPopup = $ionicPopup.confirm({
+		     title: 'Confirm Delete',
+		     template: 'Are you sure you want to leave the "' + group.gname + '" group?'
+		   });
+		   confirmPopup.then(function(res) {
+		     if(res) {
+
+			    var request = $http({
+		            method: "post",
+		            url: "http://patrick-cull.com/map/php/leaveGroup.php",
+		            crossDomain : true,
+		            data: {
+			            'username': $scope.username,
+			            'gid': group.GID,
+		        	},
+		            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        		});
+
+		     } 
+		     else {
+		       console.log('You are not sure');
+		     }
+		   });
+
+	  }
+
   
 })
 
-.controller('FriendDetailCtrl', function($scope, $stateParams, Friends) {
-  $scope.friend = Friends.get($stateParams.friendId);
+.controller('FriendDetailCtrl', function($scope, $stateParams, $http) {
+  //$scope.pal = Friends.get($stateParams.friendId);
+ 	 $scope.fname = $stateParams.fname;
+
+		//Get groups current user belongs to, and return query data on success.
+	var request = $http({
+	    method: "post",
+	    url: "http://patrick-cull.com/map/php/getPhotos.php",
+	    crossDomain : true,
+	    data: {
+	        'username':  $scope.fname,
+		},
+	    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+	});
+
+	request.success(function(data) {
+		$scope.photos = data;
+		// $scope.photos = $scope.photos.replace("'", "", 'g')
+	});
+
+
 })
 
 .controller('AccountCtrl', function($scope) {

@@ -96,7 +96,7 @@ $ionicConfigProvider.tabs.position('bottom'); //other values: top
     })
 
     .state('tab.friend-detail', {
-      url: '/friend/:friendId',
+      url: '/friend/:fname',
       views: {
         'tab-friends': {
           templateUrl: 'templates/friend-detail.html',
