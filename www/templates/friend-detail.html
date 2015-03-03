@@ -5,17 +5,10 @@
   The Friends service returns an array of friend data
 -->
 <ion-view title="{{fname}}">
-  <ion-content has-header="true" padding="true">
-   {{photos}}
+  <ion-content has-header="true">
 	<ion-list>
-			<ion-item ng-repeat="photo in photos" item="photos">
-			    <div class="item-button-right">
+			<ion-item class="imageitem" ng-repeat="photo in photos">
 			    <img ng-src={{photo.imgurl}}>
-			  	  <button class="button button-assertive" ng-click="leaveGroup(group)">
-			     	 <i class="icon ion-log-out"></i>
-			  	  </button>
-
-			  	</div>
 		  	</ion-item>
 		</ion-list>
 

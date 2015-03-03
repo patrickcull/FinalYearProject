@@ -27,6 +27,16 @@ body{
 	top: 50px !important;
 }
 
+.imageitem{
+	float:left; 
+	width:33%; 
+	padding: 5px;
+}
+
+.imageitem img{
+	width:100%;
+}
+
 .bottom{
 	bottom: 0px;
 	position: absolute;
@@ -42,4 +52,9 @@ body{
 .left{
 	left:0px;
 	border-right:1px solid white;
+}
+
+ion-header-bar{
+	border-bottom:none !important;
+	background-image: none !important;
 }
