@@ -37,10 +37,11 @@ function onPhotoURISuccess(imageURI) {
     // Show the captured photo
     galleryImage.src = imageURI;
 }
-// A button will call this function
-//
 
+// This function is called by the take photo button.
 function capturePhoto() {
+    
+
     // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
         quality: 80,
@@ -50,10 +51,10 @@ function capturePhoto() {
         saveToPhotoAlbum: false
     });
 }
-// A button will call this function
-//
-
+// This function is called by the browse gallery button.
 function getPhoto(source) {
+
+    var img = document.getElementById('image');
     // Retrieve image file location from specified source
     navigator.camera.getPicture(onPhotoURISuccess, onFail, {
         quality: 80,
@@ -64,11 +65,12 @@ function getPhoto(source) {
 
 
 
-// Called if something bad happens.
+// Called if image fails to be loaded
 function onFail(message) {
     alert('Failed because: ' + message);
 }
 
+//These functions are called when the photo gets uploaded successfully.
 function win(r) {
    alert("success");
    alert("Sent = " + r.bytesSent);

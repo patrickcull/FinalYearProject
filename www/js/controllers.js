@@ -23,41 +23,85 @@ angular.module('starter.controllers', [])
 
     $scope.uploadPhoto = function() {
     
-    var img = document.getElementById('image');
-    var imageURI = img.src;
-    var options = new FileUploadOptions();
-    options.fileKey = "file";
-    options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
-    options.mimeType = "image/jpeg";
-    options.headers = {
-       Connection: "close"
-    };
-    options.chunkedMode = true;
+	    var img = document.getElementById('image');
 
-    var params = new Object();
+	    //EXIF tag variables 
+	    var elat = undefined, elon = undefined, elatRef = undefined, elonRef = undefined;
 
-    //$scope.username =  window.localStorage.getItem("uname");
+	    //Get the data from the EXIF file.
+	    EXIF.getData(img, function() {
+	    	elon = EXIF.getTag(img, 'GPSLongitude');
+	    	elonRef = EXIF.getTag(img, 'GPSLongitudeRef');
 
-    navigator.geolocation.getCurrentPosition( 
-        function(position) { 
-    	  $scope.hideLoading();
-          params.lon = position.coords.longitude;
-          params.lat = position.coords.latitude;
-          params.uname = $scope.username;
-          alert(params.lon + ',' + params.lat); 
+	        elat = EXIF.getTag(img, 'GPSLatitude');
+	        elatRef = EXIF.getTag(img, 'GPSLatitudeRef');
 
-          options.params = params;
+	        if(elat == undefined || elon == undefined)
+		    	alert("No GPS data on photo");
 
-          var ft = new FileTransfer();
-          ft.upload(imageURI, "http://paddycull.com/map/php/upload.php", win, fail, options, true);
-        }, 
+		    else{
+		        elat = toDecimal(elat, elatRef);
+		        elon = toDecimal(elon, elonRef);
 
-        function() { 
-          alert('Error getting location'); 
-        }
-    );
+		        alert("I was taken by at Latitude:" + elat + " Longitude: " + elon );
+		    }
+	    });
 
-}
+
+	    // var imageURI = img.src;
+	    // var options = new FileUploadOptions();
+	    // options.fileKey = "file";
+	    // options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+	    // options.mimeType = "image/jpeg";
+	    // options.headers = {
+	    //    Connection: "close"
+	    // };
+	    // options.chunkedMode = true;
+
+	    // var params = new Object();
+
+	    // //$scope.username =  window.localStorage.getItem("uname");
+
+	    // navigator.geolocation.getCurrentPosition( 
+	    //     function(position) { 
+	    // 	  $scope.hideLoading();
+	    //       params.lon = position.coords.longitude;
+	    //       params.lat = position.coords.latitude;
+	    //       params.uname = $scope.username;
+	    //       alert(params.lon + ',' + params.lat); 
+
+	    //       options.params = params;
+
+	    //       var ft = new FileTransfer();
+	    //       ft.upload(imageURI, "http://paddycull.com/map/php/upload.php", win, fail, options, true);
+	    //     }, 
+
+	    //     function() { 
+	    //       alert('Error getting location'); 
+	    //     }
+	    // );
+	}
+
+	$scope.reloadPage = function(){
+		// $window.location.reload(true);
+		// $state.go($state.current, {}, {reload: true});
+		// alert("Hi");
+	}
+
+	//This function converts the EXIF co-ordinates into decimal co-ordinates.
+	var toDecimal = function (number, direction) {
+		//Convert it.
+		var dec = number[0] + (number[1] / 60) + (number[2]/3600);
+
+		//Round it
+		dec = dec.toFixed(7);
+
+		//Check if the decimal value should be minus or not.
+		if(direction == 'S' || direction == 'W'){
+			dec = dec*-1;
+		}
+		return dec;
+	};
 
 })
 
