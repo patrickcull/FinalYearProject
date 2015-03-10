@@ -49,7 +49,7 @@ $ionicConfigProvider.tabs.position('bottom'); //other values: top
     // Each tab has its own nav history stack:
 
     .state('tab.dash', {
-      cache: false,
+      // cache: false,
       url: '/dash',
       views: {
         'tab-dash': {
@@ -101,6 +101,16 @@ $ionicConfigProvider.tabs.position('bottom'); //other values: top
         'tab-friends': {
           templateUrl: 'templates/friend-detail.html',
           controller: 'FriendDetailCtrl'
+        }
+      }
+    })
+
+    .state('tab.group-detail', {
+      url: '/group/:GID?gname',
+      views: {
+        'tab-groups': {
+          templateUrl: 'templates/group-detail.html',
+          controller: 'GroupDetailCtrl'
         }
       }
     })

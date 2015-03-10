@@ -3,29 +3,26 @@ angular.module('starter.controllers', [])
 .controller('DashCtrl', function($scope, $sce) {
 	//The current user will be sent to the map page using POST
   	$scope.username =  window.localStorage.getItem("uname");
-  	$scope.url = "http://patrick-cull.com/map/index.php?uname=" + $scope.username;
+  	$scope.url = "http://paddycull.com/map/index.php?uname=" + $scope.username;
   	$scope.mapurl = $sce.trustAsResourceUrl($scope.url);
 
 })
 
 .controller('CamCtrl', function($scope, $ionicLoading) {
 
-	$scope.showLoading = function() {
+	$scope.showLoading = function(message) {
 	    $ionicLoading.show({
-	      template: 'Uploading...'
+	      template: message
 	    });
   	};
 	$scope.hideLoading = function(){
 	    $ionicLoading.hide();
 	};
 
-
-
     $scope.username =  window.localStorage.getItem("uname");
 
     $scope.uploadPhoto = function() {
-    //alert('Uploading Photo...');     
-    $scope.showLoading();
+    
     var img = document.getElementById('image');
     var imageURI = img.src;
     var options = new FileUploadOptions();
@@ -35,7 +32,7 @@ angular.module('starter.controllers', [])
     options.headers = {
        Connection: "close"
     };
-    options.chunkedMode = false;
+    options.chunkedMode = true;
 
     var params = new Object();
 
@@ -43,6 +40,7 @@ angular.module('starter.controllers', [])
 
     navigator.geolocation.getCurrentPosition( 
         function(position) { 
+    	  $scope.hideLoading();
           params.lon = position.coords.longitude;
           params.lat = position.coords.latitude;
           params.uname = $scope.username;
@@ -51,9 +49,7 @@ angular.module('starter.controllers', [])
           options.params = params;
 
           var ft = new FileTransfer();
-          ft.upload(imageURI, "http://patrick-cull.com/map/php/upload.php", win, fail, options, true);
-    	  $scope.hideLoading();
-
+          ft.upload(imageURI, "http://paddycull.com/map/php/upload.php", win, fail, options, true);
         }, 
 
         function() { 
@@ -72,7 +68,7 @@ angular.module('starter.controllers', [])
   //Get friends of current user, and return query data on success.
 	var request = $http({
 	    method: "post",
-	    url: "http://patrick-cull.com/map/php/getfriends.php",
+	    url: "http://paddycull.com/map/php/getfriends.php",
 	    crossDomain : true,
 	    data: {
 	        'username':  $scope.username,
@@ -109,7 +105,7 @@ angular.module('starter.controllers', [])
 	  $scope.addFriend = function(friend){
         var request = $http({
             method: "post",
-            url: "http://patrick-cull.com/map/php/addFriend.php",
+            url: "http://paddycull.com/map/php/addFriend.php",
             crossDomain : true,
             data: {
 	            'username': $scope.username,
@@ -147,7 +143,7 @@ angular.module('starter.controllers', [])
 
 			    var request = $http({
 		            method: "post",
-		            url: "http://patrick-cull.com/map/php/deleteFriend.php",
+		            url: "http://paddycull.com/map/php/deleteFriend.php",
 		            crossDomain : true,
 		            data: {
 			            'username': $scope.username,
@@ -173,7 +169,7 @@ angular.module('starter.controllers', [])
 	//Get groups current user belongs to, and return query data on success.
 	var request = $http({
 	    method: "post",
-	    url: "http://patrick-cull.com/map/php/getgroups.php",
+	    url: "http://paddycull.com/map/php/getgroups.php",
 	    crossDomain : true,
 	    data: {
 	        'username':  $scope.username,
@@ -229,7 +225,7 @@ angular.module('starter.controllers', [])
 	  $scope.joinGroup = function(group){
         var request = $http({
             method: "post",
-            url: "http://patrick-cull.com/map/php/joinGroup.php",
+            url: "http://paddycull.com/map/php/joinGroup.php",
             crossDomain : true,
             data: {
 	            'username': $scope.username,
@@ -256,7 +252,7 @@ angular.module('starter.controllers', [])
 	   $scope.createGroup = function(group){
         var request = $http({
             method: "post",
-            url: "http://patrick-cull.com/map/php/createGroup.php",
+            url: "http://paddycull.com/map/php/createGroup.php",
             crossDomain : true,
             data: {
 	            'gname': group.gname,
@@ -292,7 +288,7 @@ angular.module('starter.controllers', [])
 
 			    var request = $http({
 		            method: "post",
-		            url: "http://patrick-cull.com/map/php/leaveGroup.php",
+		            url: "http://paddycull.com/map/php/leaveGroup.php",
 		            crossDomain : true,
 		            data: {
 			            'username': $scope.username,
@@ -319,7 +315,7 @@ angular.module('starter.controllers', [])
 		//Get groups current user belongs to, and return query data on success.
 	var request = $http({
 	    method: "post",
-	    url: "http://patrick-cull.com/map/php/getPhotos.php",
+	    url: "http://paddycull.com/map/php/getPhotos.php",
 	    crossDomain : true,
 	    data: {
 	        'username':  $scope.fname,
@@ -330,6 +326,29 @@ angular.module('starter.controllers', [])
 	request.success(function(data) {
 		$scope.photos = data;
 		// $scope.photos = $scope.photos.replace("'", "", 'g')
+	});
+
+
+})
+
+.controller('GroupDetailCtrl', function($scope, $stateParams, $http) {
+ 	 $scope.gid = $stateParams.GID;
+ 	 $scope.gname = $stateParams.gname;
+
+
+		//Get groups current user belongs to, and return query data on success.
+	var request = $http({
+	    method: "post",
+	    url: "http://paddycull.com/map/php/getGroupPhotos.php",
+	    crossDomain : true,
+	    data: {
+	        'gid':  $scope.gid,
+		},
+	    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+	});
+
+	request.success(function(data) {
+		$scope.photos = data;
 	});
 
 
@@ -355,7 +374,7 @@ angular.module('starter.controllers', [])
 
         var request = $http({
             method: "post",
-            url: "http://patrick-cull.com/map/php/login.php",
+            url: "http://paddycull.com/map/php/login.php",
             crossDomain : true,
             data: {
 	            'uname': user.uname,
@@ -387,7 +406,7 @@ $scope.signUp = function (user) {
 
         var request = $http({
             method: "post",
-            url: "http://patrick-cull.com/map/php/user.php",
+            url: "http://paddycull.com/map/php/user.php",
             crossDomain : true,
             data: {
 	            'email': user.email,

@@ -16,7 +16,7 @@
 		<div class="item item-divider">
     		Group Name - Group ID
   		</div>
-			<ion-item ng-repeat="group in groups | filter:searchFilter | orderBy:'gname'" item="groups">
+			<ion-item href="#/tab/group/{{group.GID}}?gname={{group.gname}}" ng-repeat="group in groups | filter:searchFilter | orderBy:'gname'" item="groups">
 			    <div class="item-button-right">
 			     {{group.gname}} -
 			     {{group.GID}}

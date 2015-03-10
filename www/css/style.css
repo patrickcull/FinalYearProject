@@ -6,19 +6,23 @@ body{
 }
 .cam-button{
 	display: inline-block;
-	width:50%;
+	width:100px;
 	background-color: rgba(52, 73, 94,0.7);
 	color: white;
 	height:50px;
 	position: absolute;
 	bottom:0px;
 	border:none;
+	font-size: 50px;
+	line-height: 50px;
+
 }
 
 #uploadButton{
 	position: absolute;
 	top:0;
 	width:100%;
+	/*display:none;*/
 
 }
 
@@ -47,11 +51,13 @@ body{
 
 .right{
 	right:0px;
+	border-top-left-radius:20px;
 }
 
 .left{
 	left:0px;
-	border-right:1px solid white;
+	border-top-right-radius:20px;
+
 }
 
 ion-header-bar{
