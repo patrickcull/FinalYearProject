@@ -1,13 +1,17 @@
 
 <ion-view hide-nav-bar="true">
   <ion-content>
-    <img style="display:none; max-width:100%; max-height:100%;" id="image" src="" />
+    <img style="max-width:100%; max-height:100%;" id="image" src="hi" />
 
-    <button id="uploadButton" class="button button-positive icon ion-upload" ng-click="uploadPhoto()"></button>
+    <button class="button button-positive icon ion-map" ng-click="getEXIF()"></button>
+
+    <!-- <button id="uploadButton" class="button button-positive icon ion-camera" ui-sref="tab.upload" ng-click="goUpload()"></button> -->
+    <button id="uploadButton" class="button button-positive icon ion-upload" ng-click="goUpload()" ></button>
+
 
     <button class="cam-button left icon ion-ios-camera-outline" onclick="capturePhoto();"></button> <br>
 
-	<button class="cam-button right icon ion-images"  onclick="getPhoto(pictureSource.PHOTOLIBRARY);" ng-click="reloadPage()"></button><br>
+	<button class="cam-button right icon ion-images"  onclick="getPhoto(pictureSource.PHOTOLIBRARY);"></button><br>
 
   </ion-content>
 </ion-view>

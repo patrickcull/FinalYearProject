@@ -1,0 +1,39 @@
+
+<ion-view>
+  <ion-content>
+    <img style=" max-width:50%; max-height:40%;" id="image" ng-src="data:image/jpeg;base64, {{imgsrc}}" />
+
+	<ul class="list">
+
+		<label class="item item-input item-select">
+		    <div class="input-label">
+		      Select Group:
+		    </div>
+			<select ng-model="selectedGroup" ng-options="group.GID as group.gname for group in groups" ng-change = "update(selectedGroup)">
+				<option value="">No Group</option>
+			</select>
+		</label>
+
+		<label class="item item-input item-stacked-label">
+			<span class="input-label">Tags</span>
+			<input type="text" placeholder="#funny, #scenic, #cool, #monument etc.">
+		</label>
+
+		<li class="item item-toggle">
+		Make Public?
+		<label class="toggle toggle-positive">
+		<input type="checkbox" checked="checked" id = "checkbox" value="public">
+			<div class="track">
+				 <div class="handle"></div>
+			</div>
+		</label>
+		</li>
+	</ul>
+
+
+    <!-- <button class="button button-block bottom button-positive icon ion-upload" ng-click="uploadPhoto()"> Upload</button> -->
+    <button class="button button-block bottom button-positive icon ion-upload" ng-click="uploadPhoto()"> Upload</button>
+
+
+  </ion-content>
+</ion-view>

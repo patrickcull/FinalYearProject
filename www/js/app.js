@@ -47,9 +47,8 @@ $ionicConfigProvider.tabs.position('bottom'); //other values: top
     })
 
     // Each tab has its own nav history stack:
-
     .state('tab.dash', {
-      // cache: false,
+      cache: false,
       url: '/dash',
       views: {
         'tab-dash': {
@@ -80,6 +79,17 @@ $ionicConfigProvider.tabs.position('bottom'); //other values: top
         'tab-camera': {
           templateUrl: 'templates/tab-camera.html',
           controller: 'CamCtrl'
+        }
+      }
+    })
+
+    .state('tab.upload', {
+      cache: false,
+      url: '/camera/upload',
+      views: {
+        'tab-camera': {
+          templateUrl: 'templates/tab-upload.html',
+          controller: 'UploadCtrl'
         }
       }
     })

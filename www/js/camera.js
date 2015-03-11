@@ -15,27 +15,42 @@ function onDeviceReady() {
 function onPhotoDataSuccess(imageURI) {
     // Uncomment to view the base64-encoded image data
     console.log(imageURI);
-    alert(imageURI);
+
+    window.localStorage.setItem("imgsource", imageURI);
+
+
     // Get image handle
-    //
     var cameraImage = document.getElementById('image');
+    var uploadB = document.getElementById('uploadButton');
+    uploadB.style.display = 'block';
+
     // Unhide image elements
     //
     cameraImage.style.display = 'block';
+
     // Show the captured photo
     // The inline CSS rules are used to resize the image
     //
-    cameraImage.src = imageURI;
+    cameraImage.src = "data:image/jpeg;base64,"+ imageURI;
 }
 
 //When photo is loaded from gallery
 function onPhotoURISuccess(imageURI) {
     console.log(imageURI);
+
+    // alert(imageURI);
+
+    window.localStorage.setItem("imgsource", imageURI);
+
+
     var galleryImage = document.getElementById('image');
+
+    var uploadB = document.getElementById('uploadButton');
+    uploadB.style.display = 'block';
     // Unhide image elements
     galleryImage.style.display = 'block';
     // Show the captured photo
-    galleryImage.src = imageURI;
+    galleryImage.src = "data:image/jpeg;base64,"+ imageURI;
 }
 
 // This function is called by the take photo button.
@@ -47,7 +62,7 @@ function capturePhoto() {
         quality: 80,
         targetWidth: 600,
         targetHeight: 600,
-        destinationType: destinationType.FILE_URI,
+        destinationType: destinationType.DATA_URL,
         saveToPhotoAlbum: false
     });
 }
@@ -58,7 +73,7 @@ function getPhoto(source) {
     // Retrieve image file location from specified source
     navigator.camera.getPicture(onPhotoURISuccess, onFail, {
         quality: 80,
-        destinationType: destinationType.FILE_URI,
+        destinationType: destinationType.DATA_URL,
         sourceType: source
     });
 }
