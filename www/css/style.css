@@ -54,6 +54,11 @@ body{
 	border-top-left-radius:20px;
 }
 
+.floatright{
+	float:right;
+	display:inline-block;
+}
+
 .left{
 	left:0px;
 	border-top-right-radius:20px;
@@ -63,4 +68,26 @@ body{
 ion-header-bar{
 	border-bottom:none !important;
 	background-image: none !important;
+}
+
+/*The following CSS is used for the rating stars.*/
+.rating{
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+}
+
+.rating li {
+	padding: 1px;
+	color: #a9a9a9;
+	text-align: center;
+	font-weight: bold;
+	font-size: 25px;
+	list-style-type: none;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.rating .filled {
+  color: #ef4e3a; //#21568b
 }

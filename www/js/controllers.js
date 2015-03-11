@@ -77,6 +77,12 @@ angular.module('starter.controllers', [])
 //This screen deals with uploading the photo, along with other options attached to the photo.
 .controller('UploadCtrl', function($scope, $state, $http) {
 
+	//This variable sets the default stars rating.
+	$scope.rating = 3;
+	 $scope.rateFunction = function(rating) {
+	  $scope.userRating = rating;
+	};
+
 	$scope.imgsrc =  window.localStorage.getItem("imgsource");
 	$scope.username =  window.localStorage.getItem("uname");
 
@@ -101,15 +107,8 @@ angular.module('starter.controllers', [])
 		$scope.selectedGroup = groupID;
 	}
 
-
-
-
-	$scope.checksrc = function(){
-		alert($scope.imgsrc);
-	}
-
 	$scope.uploadPhoto = function() {
-		
+
 	    var img = document.getElementById('image');
 	    var imageURI = img.src;
 
@@ -133,6 +132,8 @@ angular.module('starter.controllers', [])
 	          params.lat = position.coords.latitude;
 	          params.uname = $scope.username;
 	          params.gid = $scope.selectedGroup;
+			  params.rating = $scope.userRating;
+
 	          alert(params.lon + ',' + params.lat);
 
 	          //Check if the photo is to be made public or not.
@@ -525,4 +526,42 @@ $scope.signUp = function (user) {
             }  
         });
 }
+})
+
+
+
+//This directive is used for rating photos. It was taken from the codepen here - http://codepen.io/TepigMC/pen/FIdHb
+.directive("starRating", function() {
+  return {
+    restrict : "A",
+    template : "<ul class='rating'>" +
+               "  <li ng-repeat='star in stars' ng-class='star' ng-click='toggle($index)'>" +
+               "    <i class='icon ion-android-star'></i>" + //&#9733
+               "  </li>" +
+               "</ul>",
+    scope : {
+      ratingValue : "=",
+      max : "=",
+      onRatingSelected : "&"
+    },
+    link : function(scope, elem, attrs) {
+      var updateStars = function() {
+        scope.stars = [];
+        for ( var i = 0; i < scope.max; i++) {
+          scope.stars.push({
+            filled : i < scope.ratingValue
+          });
+        }
+      };
+      scope.toggle = function(index) {
+        scope.ratingValue = index + 1;
+        scope.onRatingSelected({
+          rating : index + 1
+        });
+      };
+      scope.$watch("ratingValue", function(oldVal, newVal) {
+        if (newVal) { updateStars(); }
+      });
+    }
+  };
 });
