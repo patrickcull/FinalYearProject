@@ -27,11 +27,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
-.config(['$ionicConfigProvider', function($ionicConfigProvider) {
 
-$ionicConfigProvider.tabs.position('bottom'); //other values: top
+//Ensures the interface is consistent across multiple platforms.
+.config(['$ionicConfigProvider', function($ionicConfigProvider) {
+  $ionicConfigProvider.tabs.position('bottom'); //other values: top
 
 }])
+
+//Whitelist the devices file system for access to photos.
+.config(function($compileProvider){
+$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file|blob|cdvfile|content):|data:image\//);
+})
 
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -73,7 +79,6 @@ $ionicConfigProvider.tabs.position('bottom'); //other values: top
     })
 
     .state('tab.camera', {
-      cache: false,
       url: '/camera',
       views: {
         'tab-camera': {
@@ -85,7 +90,7 @@ $ionicConfigProvider.tabs.position('bottom'); //other values: top
 
     .state('tab.upload', {
       cache: false,
-      url: '/camera/upload',
+      url: '/camera/upload/',
       views: {
         'tab-camera': {
           templateUrl: 'templates/tab-upload.html',
@@ -143,6 +148,16 @@ $ionicConfigProvider.tabs.position('bottom'); //other values: top
         'tab-account': {
           templateUrl: 'templates/tab-account.html',
           controller: 'AccountCtrl'
+        }
+      }
+    })
+
+    .state('tab.user', {
+      url: '/account/pictures',
+      views: {
+        'tab-account': {
+          templateUrl: 'templates/tab-user.html',
+          controller: 'UserCtrl'
         }
       }
     });

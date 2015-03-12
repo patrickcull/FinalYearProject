@@ -13,11 +13,10 @@ function onDeviceReady() {
 
 //When a photo is taken
 function onPhotoDataSuccess(imageURI) {
-    // Uncomment to view the base64-encoded image data
+
     console.log(imageURI);
 
     window.localStorage.setItem("imgsource", imageURI);
-
 
     // Get image handle
     var cameraImage = document.getElementById('image');
@@ -25,47 +24,43 @@ function onPhotoDataSuccess(imageURI) {
     uploadB.style.display = 'block';
 
     // Unhide image elements
-    //
     cameraImage.style.display = 'block';
 
     // Show the captured photo
-    // The inline CSS rules are used to resize the image
-    //
-    cameraImage.src = "data:image/jpeg;base64,"+ imageURI;
+    cameraImage.src = imageURI;
 }
 
 //When photo is loaded from gallery
 function onPhotoURISuccess(imageURI) {
     console.log(imageURI);
 
-    // alert(imageURI);
-
     window.localStorage.setItem("imgsource", imageURI);
 
-
+    // Unhide image elements
     var galleryImage = document.getElementById('image');
+    galleryImage.style.display = 'block';
 
+    //Unhide Upload Button.
     var uploadB = document.getElementById('uploadButton');
     uploadB.style.display = 'block';
-    // Unhide image elements
-    galleryImage.style.display = 'block';
+
     // Show the captured photo
-    galleryImage.src = "data:image/jpeg;base64,"+ imageURI;
+    galleryImage.src = imageURI;
 }
 
 // This function is called by the take photo button.
 function capturePhoto() {
     
-
     // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
         quality: 80,
         targetWidth: 600,
         targetHeight: 600,
-        destinationType: destinationType.DATA_URL,
+        destinationType: destinationType.FILE_URI,
         saveToPhotoAlbum: false
     });
 }
+
 // This function is called by the browse gallery button.
 function getPhoto(source) {
 
@@ -73,12 +68,10 @@ function getPhoto(source) {
     // Retrieve image file location from specified source
     navigator.camera.getPicture(onPhotoURISuccess, onFail, {
         quality: 80,
-        destinationType: destinationType.DATA_URL,
+        destinationType: destinationType.FILE_URI,
         sourceType: source
     });
 }
-
-
 
 // Called if image fails to be loaded
 function onFail(message) {

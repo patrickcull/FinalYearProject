@@ -1,0 +1,26 @@
+<div class="modal">
+
+  <!-- Modal header bar -->
+  <ion-header-bar class="bar-secondary">
+    <h1 class="title">Add Friend</h1>
+    <button class="button button-clear button-positive" ng-click="closeModal()">Close</button>
+  </ion-header-bar>
+
+  <!-- Modal content area -->
+  <ion-content>
+
+    <form ng-submit="addFriend(friend)">
+      <div class="list">
+        <label class="item item-input">
+          <input type="text" placeholder="Enter Friends Username" ng-model="friend.fname">
+        </label>
+      </div>
+      <div class="padding">
+        <button type="submit" class="button button-block button-positive">Add Friend</button>
+      </div>
+      {{responseMessage}}
+    </form>
+
+  </ion-content>
+
+</div>

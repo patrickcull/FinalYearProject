@@ -1,7 +1,7 @@
 
 <ion-view>
   <ion-content>
-    <img style=" max-width:50%; max-height:40%;" id="image" ng-src="data:image/jpeg;base64, {{imgsrc}}" />
+    <img style=" max-width:50%; max-height:40%;" id="image" src="{{imgsrc}}" />
 
 	<ul class="list">
 
@@ -35,9 +35,11 @@
 		</li>
 	</ul>
 
+    <button class="button button-positive icon ion-map" ng-click="getEXIF()"></button>
+
 
     <!-- <button class="button button-block bottom button-positive icon ion-upload" ng-click="uploadPhoto()"> Upload</button> -->
-    <button class="button button-block bottom button-positive icon ion-upload" ng-click="uploadPhoto()"> Upload</button>
+    <button class="button button-block button-positive icon ion-upload" ng-click="uploadPhoto()">Upload</button>
 
 
   </ion-content>

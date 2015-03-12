@@ -8,28 +8,158 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('CamCtrl', function($scope, $ionicLoading, $state) {
+.controller('CamCtrl', function($scope,$state) {
 
-	$scope.showLoading = function(message) {
-	    $ionicLoading.show({
-	      template: message
-	    });
-  	};
-	$scope.hideLoading = function(){
-	    $ionicLoading.hide();
+	//Function to go to the upload screen and pass the image.
+	$scope.goUpload = function(){
+
+		$state.go("tab.upload");
+	}
+
+})
+
+
+//This screen deals with uploading the photo, along with other options attached to the photo.
+.controller('UploadCtrl', function($scope, $state, $http) {
+
+	//Used to display the image and to ge the users name.
+	$scope.imgsrc =  window.localStorage.getItem("imgsource");
+	$scope.username =  window.localStorage.getItem("uname");
+
+
+	//This variable sets the default stars rating.
+	$scope.rating = 3;
+	$scope.userRating = 3;
+	//Updated when the rating is changed.
+	 $scope.rateFunction = function(rating) {
+	  $scope.userRating = rating;
 	};
 
-    $scope.username =  window.localStorage.getItem("uname");
+	//Get the users groups so they can select a group to upload to.
+	$scope.selectedGroup = null;
+	var request = $http({
+	    method: "post",
+	    url: "http://paddycull.com/map/php/getgroups.php",
+	    crossDomain : true,
+	    data: {
+	        'username':  $scope.username,
+		},
+	    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+	})
+	.success(function(data) {
+		$scope.groups = data;
+	});
 
-    $scope.getEXIF = function() {
+	// Keeps track of group being selected
+	$scope.update = function (groupID){
+		$scope.selectedGroup = groupID;
+	}
+
+	//This checks if the image source contains ionicFramework. If it does, the image was captured in the app.
+	//This will be used to determine how the geo co-ordinates will be obtained. (-1 indicates it was chosen from gallery.)
+	var imageType = $scope.imgsrc.indexOf('ionicframework');
+	alert("Image type is " + imageType);
+
+
+	$scope.uploadPhoto = function() {
+
+	    var img = document.getElementById('image');
+	    var imageURI = img.src;
+
+	    var options = new FileUploadOptions();
+	    options.fileKey = "file";
+	    options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+	    options.mimeType = "image/jpeg";
+	    options.headers = {Connection: "close"};
+	    options.chunkedMode = true;
+
+	    var params = new Object();
+
+	    $scope.username =  window.localStorage.getItem("uname");
+
+	    //This function gets user location. 
+	   //  navigator.geolocation.getCurrentPosition( 
+	   //      function(position) { 
+
+	   //        params.lon = position.coords.longitude;
+	   //        params.lat = position.coords.latitude;
+	   //        params.uname = $scope.username;
+	   //        params.gid = $scope.selectedGroup;
+			 //  params.rating = $scope.userRating;
+
+	   //        alert(params.lon + ',' + params.lat);
+
+	   //        //Check if the photo is to be made public or not.
+	   //        if (document.getElementById('checkbox').checked)
+				// params.pub = 1;
+			 //  else
+				// params.pub = 0;
+
+	   //        options.params = params;
+
+	   //        var ft = new FileTransfer();
+	   //        ft.upload(imageURI, "http://paddycull.com/map/php/upload.php", win, fail, options, true);
+	   //      }, 
+
+	   //      function() { 
+	   //        alert('Error getting location'); 
+	   //      }
+	   //  );
+
+
+		//EXIF tag variables 
+	    var elat = undefined, elon = undefined, elatRef = undefined, elonRef = undefined;
+
+	    //Get the data from the EXIF file.
+	    EXIF.getData(img, function() {
+	    	alert(img.src);
+	    	elon = EXIF.getTag(img, 'GPSLongitude');
+	    	elonRef = EXIF.getTag(img, 'GPSLongitudeRef');
+
+	        elat = EXIF.getTag(img, 'GPSLatitude');
+	        elatRef = EXIF.getTag(img, 'GPSLatitudeRef');
+
+	        if(elat == undefined || elon == undefined)
+		    	alert("No GPS data on photo");
+
+		    else{
+		        params.lat = toDecimal(elat, elatRef);
+		        params.lon = toDecimal(elon, elonRef);
+
+				params.uname = $scope.username;
+				params.gid = $scope.selectedGroup;
+				params.rating = $scope.userRating;
+
+				alert(params.lon + ',' + params.lat);
+
+				//Check if the photo is to be made public or not.
+				if (document.getElementById('checkbox').checked)
+					params.pub = 1;
+				else
+					params.pub = 0;
+
+				options.params = params;
+
+				var ft = new FileTransfer();
+				ft.upload(imageURI, "http://paddycull.com/map/php/upload.php", win, fail, options, true);
+
+
+		        alert("I was taken by at Latitude:" + elat + " Longitude: " + elon );
+		    }
+	    });
+	}
+
+	$scope.getEXIF = function() {
     
 	    var img = document.getElementById('image');
+	    $scope.imgsrc =  window.localStorage.getItem("imgsource");
 
 	    //EXIF tag variables 
 	    var elat = undefined, elon = undefined, elatRef = undefined, elonRef = undefined;
 
 	    //Get the data from the EXIF file.
 	    EXIF.getData(img, function() {
+	    	alert(img.src);
 	    	elon = EXIF.getTag(img, 'GPSLongitude');
 	    	elonRef = EXIF.getTag(img, 'GPSLongitudeRef');
 
@@ -48,22 +178,12 @@ angular.module('starter.controllers', [])
 	    });
 	}
 
-	//Function to go to the upload screen and pass the image.
-	$scope.goUpload = function(){
-
-		$state.go("tab.upload");
-	}
-
-
-
 	//This function converts the EXIF co-ordinates into decimal co-ordinates.
 	var toDecimal = function (number, direction) {
 		//Convert it.
 		var dec = number[0] + (number[1] / 60) + (number[2]/3600);
-
 		//Round it
 		dec = dec.toFixed(7);
-
 		//Check if the decimal value should be minus or not.
 		if(direction == 'S' || direction == 'W'){
 			dec = dec*-1;
@@ -71,88 +191,14 @@ angular.module('starter.controllers', [])
 		return dec;
 	};
 
-})
-
-
-//This screen deals with uploading the photo, along with other options attached to the photo.
-.controller('UploadCtrl', function($scope, $state, $http) {
-
-	//This variable sets the default stars rating.
-	$scope.rating = 3;
-	 $scope.rateFunction = function(rating) {
-	  $scope.userRating = rating;
+	$scope.showLoading = function(message) {
+	    $ionicLoading.show({
+	      template: message
+	    });
+  	};
+	$scope.hideLoading = function(){
+	    $ionicLoading.hide();
 	};
-
-	$scope.imgsrc =  window.localStorage.getItem("imgsource");
-	$scope.username =  window.localStorage.getItem("uname");
-
-	//Get the users groups so they can select a group to upload to.
-
-	$scope.selectedGroup = null;
-	var request = $http({
-	    method: "post",
-	    url: "http://paddycull.com/map/php/getgroups.php",
-	    crossDomain : true,
-	    data: {
-	        'username':  $scope.username,
-		},
-	    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-	});
-
-	request.success(function(data) {
-		$scope.groups = data;
-	});
-
-	$scope.update = function (groupID){
-		$scope.selectedGroup = groupID;
-	}
-
-	$scope.uploadPhoto = function() {
-
-	    var img = document.getElementById('image');
-	    var imageURI = img.src;
-
-	    var options = new FileUploadOptions();
-	    options.fileKey = "file";
-	    options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
-	    options.mimeType = "image/jpeg";
-	    options.headers = {
-	       Connection: "close"
-	    };
-	    options.chunkedMode = true;
-
-	    var params = new Object();
-
-	    $scope.username =  window.localStorage.getItem("uname");
-
-	    navigator.geolocation.getCurrentPosition( 
-	        function(position) { 
-	    	  // $scope.hideLoading();
-	          params.lon = position.coords.longitude;
-	          params.lat = position.coords.latitude;
-	          params.uname = $scope.username;
-	          params.gid = $scope.selectedGroup;
-			  params.rating = $scope.userRating;
-
-	          alert(params.lon + ',' + params.lat);
-
-	          //Check if the photo is to be made public or not.
-	          if (document.getElementById('checkbox').checked)
-				params.pub = 1;
-			  else
-				params.pub = 0;
-
-	          options.params = params;
-
-	          var ft = new FileTransfer();
-	          ft.upload(imageURI, "http://paddycull.com/map/php/upload.php", win, fail, options, true);
-	        }, 
-
-	        function() { 
-	          alert('Error getting location'); 
-	        }
-	    );
-	}
 })
 
 .controller('FriendsCtrl', function($scope, $http, $ionicModal, $ionicPopup) {
@@ -293,22 +339,18 @@ angular.module('starter.controllers', [])
 	  })   
 
 	  $scope.openModal = function(index) {
-	  	if(index == 1){
+	  	if(index == 1)
 	  		$scope.joinModal.show();
-	  	}
-	  	else{
+	  	else
 	  		$scope.createModal.show();
-	  	}
 	  };
 
 	  $scope.closeModal = function(index) {
 	  	$scope.responseMessage = "";
-	  	if(index == 1){
+	  	if(index == 1)
 	  		$scope.joinModal.hide();
-	  	}
-	  	else{
+	  	else
 	  		$scope.createModal.hide();
-	  	}
 	  };
 
 	  $scope.$on('$destroy', function() {
@@ -452,6 +494,28 @@ angular.module('starter.controllers', [])
 		//Clear the set username
 		window.localStorage.setItem("uname", "");
 	}
+})
+
+.controller('UserCtrl', function($scope, $stateParams, $http) {
+	$scope.username =  window.localStorage.getItem("uname");
+
+
+	//Get friends photos, and return query data on success.
+	var request = $http({
+	    method: "post",
+	    url: "http://paddycull.com/map/php/getPhotos.php",
+	    crossDomain : true,
+	    data: {
+	        'username':  $scope.username,
+		},
+	    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+	});
+
+	request.success(function(data) {
+		$scope.photos = data;
+	});
+
+
 })
 
 
