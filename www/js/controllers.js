@@ -1,6 +1,8 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope, $sce) {
+.controller('DashCtrl', function($scope, $sce, $ionicHistory) {
+
+	$ionicHistory.clearHistory();
 	//The current user will be sent to the map page using POST
   	$scope.username =  window.localStorage.getItem("uname");
   	$scope.url = "http://paddycull.com/map/index.php?uname=" + $scope.username;
@@ -18,14 +20,44 @@ angular.module('starter.controllers', [])
 
 })
 
+.controller('CreatePinCtrl', function($scope, $state, $sce, $ionicHistory) {
+	//The current user will be sent to the map page using POST
+  	$scope.url = "http://paddycull.com/map/createMap.php";
+  	$scope.mapurl = $sce.trustAsResourceUrl($scope.url);
+
+  	var latlng = null;
+
+  	//Add listener to recieve iframe co-ordinates.
+  	window.addEventListener("message", function(event) {
+    console.log("Position: " + event.data);
+    // alert(event.data);
+    latlng = event.data;
+    //Get the marker position and insert it into the variables.
+    // var array = event.data.split(',');
+    // var lat = array[0];
+    // var lng = array[1];
+    // alert(lat + "," + lng);
+
+	});
+
+	$scope.uploadHere = function(){
+		if(latlng)
+			$state.go("tab.upload", {'latlng': latlng} );
+		else
+			alert("Nowhere is selected.")
+	}
+})
+
 
 //This screen deals with uploading the photo, along with other options attached to the photo.
-.controller('UploadCtrl', function($scope, $state, $http) {
+.controller('UploadCtrl', function($scope, $state, $stateParams,  $sce, $http) {
+
+	$scope.url = "http://paddycull.com/map/showPinMap.php";
+  	$scope.mapurl = $sce.trustAsResourceUrl($scope.url);
 
 	//Used to display the image and to ge the users name.
 	$scope.imgsrc =  window.localStorage.getItem("imgsource");
 	$scope.username =  window.localStorage.getItem("uname");
-
 
 	//This variable sets the default stars rating.
 	$scope.rating = 3;
@@ -55,10 +87,13 @@ angular.module('starter.controllers', [])
 		$scope.selectedGroup = groupID;
 	}
 
+	$scope.createPin = function(){
+		$state.go("tab.createPin");
+	}
+
 	//This checks if the image source contains ionicFramework. If it does, the image was captured in the app.
 	//This will be used to determine how the geo co-ordinates will be obtained. (-1 indicates it was chosen from gallery.)
-	var imageType = $scope.imgsrc.indexOf('ionicframework');
-	alert("Image type is " + imageType);
+	// var imageType = $scope.imgsrc.indexOf('ionicframework');
 
 
 	$scope.uploadPhoto = function() {
@@ -112,19 +147,32 @@ angular.module('starter.controllers', [])
 
 	    //Get the data from the EXIF file.
 	    EXIF.getData(img, function() {
-	    	alert(img.src);
 	    	elon = EXIF.getTag(img, 'GPSLongitude');
 	    	elonRef = EXIF.getTag(img, 'GPSLongitudeRef');
 
 	        elat = EXIF.getTag(img, 'GPSLatitude');
 	        elatRef = EXIF.getTag(img, 'GPSLatitudeRef');
 
-	        if(elat == undefined || elon == undefined)
-		    	alert("No GPS data on photo");
+	        //Check if the EXIF data exists, or if the marker has been drawn.
+	        if(elat == undefined && $stateParams.latlng == undefined)
+		    	alert("No GPS data on photo. Please click the map button to place it.");
 
 		    else{
-		        params.lat = toDecimal(elat, elatRef);
-		        params.lon = toDecimal(elon, elonRef);
+
+		    	//Check if the user has selected a place to put the marker.
+		    	if($stateParams.latlng){
+		    		var array = $stateParams.latlng.split(',');
+					var lati = array[0];
+					var lng = array[1];
+					// alert(lat + "," + lng);
+					params.lat = lati;
+					params.lon = lng
+		    	}
+
+		    	else{
+			        params.lat = toDecimal(elat, elatRef);
+			        params.lon = toDecimal(elon, elonRef);
+			    }
 
 				params.uname = $scope.username;
 				params.gid = $scope.selectedGroup;
@@ -143,35 +191,6 @@ angular.module('starter.controllers', [])
 				var ft = new FileTransfer();
 				ft.upload(imageURI, "http://paddycull.com/map/php/upload.php", win, fail, options, true);
 
-
-		        alert("I was taken by at Latitude:" + elat + " Longitude: " + elon );
-		    }
-	    });
-	}
-
-	$scope.getEXIF = function() {
-    
-	    var img = document.getElementById('image');
-	    $scope.imgsrc =  window.localStorage.getItem("imgsource");
-
-	    //EXIF tag variables 
-	    var elat = undefined, elon = undefined, elatRef = undefined, elonRef = undefined;
-
-	    //Get the data from the EXIF file.
-	    EXIF.getData(img, function() {
-	    	alert(img.src);
-	    	elon = EXIF.getTag(img, 'GPSLongitude');
-	    	elonRef = EXIF.getTag(img, 'GPSLongitudeRef');
-
-	        elat = EXIF.getTag(img, 'GPSLatitude');
-	        elatRef = EXIF.getTag(img, 'GPSLatitudeRef');
-
-	        if(elat == undefined || elon == undefined)
-		    	alert("No GPS data on photo");
-
-		    else{
-		        elat = toDecimal(elat, elatRef);
-		        elon = toDecimal(elon, elonRef);
 
 		        alert("I was taken by at Latitude:" + elat + " Longitude: " + elon );
 		    }

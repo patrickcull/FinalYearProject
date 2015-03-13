@@ -1,7 +1,11 @@
 
 <ion-view>
   <ion-content>
-    <img style=" max-width:50%; max-height:40%;" id="image" src="{{imgsrc}}" />
+
+  <div style="width:100%; height:40vh">
+  	<iframe style="width:50%; height:40vh; float:right;" ng-src="{{mapurl}}"></iframe>
+    <img style=" max-width:50%; max-height:40vh;" id="image" src="{{imgsrc}}" />
+  </div>
 
 	<ul class="list">
 
@@ -35,7 +39,7 @@
 		</li>
 	</ul>
 
-    <button class="button button-positive icon ion-map" ng-click="getEXIF()"></button>
+    <button class="button button-positive icon ion-map" ng-click="createPin()"></button>
 
 
     <!-- <button class="button button-block bottom button-positive icon ion-upload" ng-click="uploadPhoto()"> Upload</button> -->

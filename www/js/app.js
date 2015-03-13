@@ -79,6 +79,7 @@ $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file|blob|cdvfile|cont
     })
 
     .state('tab.camera', {
+      cache: false,
       url: '/camera',
       views: {
         'tab-camera': {
@@ -90,11 +91,22 @@ $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file|blob|cdvfile|cont
 
     .state('tab.upload', {
       cache: false,
-      url: '/camera/upload/',
+      url: '/camera/upload/?latlng',
       views: {
         'tab-camera': {
           templateUrl: 'templates/tab-upload.html',
           controller: 'UploadCtrl'
+        }
+      }
+    })
+
+    .state('tab.createPin', {
+      cache: false,
+      url: '/camera/upload/map',
+      views: {
+        'tab-camera': {
+          templateUrl: 'templates/tab-createPin.html',
+          controller: 'CreatePinCtrl'
         }
       }
     })
