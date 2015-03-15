@@ -68,6 +68,8 @@ function getPhoto(source) {
     // Retrieve image file location from specified source
     navigator.camera.getPicture(onPhotoURISuccess, onFail, {
         quality: 80,
+        targetWidth: 600,
+        targetHeight: 600,
         destinationType: destinationType.FILE_URI,
         sourceType: source
     });
@@ -76,26 +78,4 @@ function getPhoto(source) {
 // Called if image fails to be loaded
 function onFail(message) {
     alert('Failed because: ' + message);
-}
-
-//These functions are called when the photo gets uploaded successfully.
-function win(r) {
-   alert("success");
-   alert("Sent = " + r.bytesSent);
-}
-
-function fail(error) {
-   alert("error");
-   switch (error.code) {
-     case FileTransferError.FILE_NOT_FOUND_ERR:
-        alert("Photo file not found");
-        break;
-     case FileTransferError.INVALID_URL_ERR:
-       alert("Bad Photo URL");
-       break;
-     case FileTransferError.CONNECTION_ERR:
-       alert("Connection error");
-       break;
-   }
-   alert("An error has occurred: Code = " + error.code);
 }

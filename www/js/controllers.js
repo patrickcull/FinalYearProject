@@ -20,7 +20,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('CreatePinCtrl', function($scope, $state, $sce, $ionicHistory) {
+.controller('CreatePinCtrl', function($scope, $state, $sce) {
 	//The current user will be sent to the map page using POST
   	$scope.url = "http://paddycull.com/map/createMap.php";
   	$scope.mapurl = $sce.trustAsResourceUrl($scope.url);
@@ -50,15 +50,27 @@ angular.module('starter.controllers', [])
 
 
 //This screen deals with uploading the photo, along with other options attached to the photo.
-.controller('UploadCtrl', function($scope, $state, $stateParams,  $sce, $http) {
+.controller('UploadCtrl', function($scope, $state, $stateParams,  $sce, $http, $q) {
 
-	$scope.url = "http://paddycull.com/map/showPinMap.php";
-  	$scope.mapurl = $sce.trustAsResourceUrl($scope.url);
-
-	//Used to display the image and to ge the users name.
 	$scope.imgsrc =  window.localStorage.getItem("imgsource");
 	$scope.username =  window.localStorage.getItem("uname");
 
+	//EXIF tag variables 
+    var elat = undefined, elon = undefined, elatRef = undefined, elonRef = undefined;
+   	var img = document.getElementById('image');
+
+    //Get the EXIF GPS data from the image file.
+    EXIF.getData(img, function() {
+    	elon = EXIF.getTag(img, 'GPSLongitude');
+    	elonRef = EXIF.getTag(img, 'GPSLongitudeRef');
+
+        elat = EXIF.getTag(img, 'GPSLatitude');
+        elatRef = EXIF.getTag(img, 'GPSLatitudeRef');
+
+    	$scope.url = "http://paddycull.com/map/showPinMap.php?lat=" + elat + "&lng=" +elon;
+  		$scope.mapurl = $sce.trustAsResourceUrl($scope.url);
+    });
+	
 	//This variable sets the default stars rating.
 	$scope.rating = 3;
 	$scope.userRating = 3;
@@ -91,14 +103,8 @@ angular.module('starter.controllers', [])
 		$state.go("tab.createPin");
 	}
 
-	//This checks if the image source contains ionicFramework. If it does, the image was captured in the app.
-	//This will be used to determine how the geo co-ordinates will be obtained. (-1 indicates it was chosen from gallery.)
-	// var imageType = $scope.imgsrc.indexOf('ionicframework');
-
-
 	$scope.uploadPhoto = function() {
 
-	    var img = document.getElementById('image');
 	    var imageURI = img.src;
 
 	    var options = new FileUploadOptions();
@@ -112,89 +118,68 @@ angular.module('starter.controllers', [])
 
 	    $scope.username =  window.localStorage.getItem("uname");
 
-	    //This function gets user location. 
-	   //  navigator.geolocation.getCurrentPosition( 
-	   //      function(position) { 
+        //Check if the EXIF data exists, or if the marker has been drawn.
+        if(elat == undefined && $stateParams.latlng == undefined)
+	    	alert("No GPS data on photo. Please click the map button to place it.");
 
-	   //        params.lon = position.coords.longitude;
-	   //        params.lat = position.coords.latitude;
-	   //        params.uname = $scope.username;
-	   //        params.gid = $scope.selectedGroup;
-			 //  params.rating = $scope.userRating;
+	    else{
 
-	   //        alert(params.lon + ',' + params.lat);
+	    	//Check if the user has selected a place to put the marker.
+	    	if($stateParams.latlng){
+	    		var array = $stateParams.latlng.split(',');
+				var lati = array[0];
+				var lng = array[1];
+				// alert(lat + "," + lng);
+				params.lat = lati;
+				params.lon = lng
+	    	}
 
-	   //        //Check if the photo is to be made public or not.
-	   //        if (document.getElementById('checkbox').checked)
-				// params.pub = 1;
-			 //  else
-				// params.pub = 0;
-
-	   //        options.params = params;
-
-	   //        var ft = new FileTransfer();
-	   //        ft.upload(imageURI, "http://paddycull.com/map/php/upload.php", win, fail, options, true);
-	   //      }, 
-
-	   //      function() { 
-	   //        alert('Error getting location'); 
-	   //      }
-	   //  );
-
-
-		//EXIF tag variables 
-	    var elat = undefined, elon = undefined, elatRef = undefined, elonRef = undefined;
-
-	    //Get the data from the EXIF file.
-	    EXIF.getData(img, function() {
-	    	elon = EXIF.getTag(img, 'GPSLongitude');
-	    	elonRef = EXIF.getTag(img, 'GPSLongitudeRef');
-
-	        elat = EXIF.getTag(img, 'GPSLatitude');
-	        elatRef = EXIF.getTag(img, 'GPSLatitudeRef');
-
-	        //Check if the EXIF data exists, or if the marker has been drawn.
-	        if(elat == undefined && $stateParams.latlng == undefined)
-		    	alert("No GPS data on photo. Please click the map button to place it.");
-
-		    else{
-
-		    	//Check if the user has selected a place to put the marker.
-		    	if($stateParams.latlng){
-		    		var array = $stateParams.latlng.split(',');
-					var lati = array[0];
-					var lng = array[1];
-					// alert(lat + "," + lng);
-					params.lat = lati;
-					params.lon = lng
-		    	}
-
-		    	else{
-			        params.lat = toDecimal(elat, elatRef);
-			        params.lon = toDecimal(elon, elonRef);
-			    }
-
-				params.uname = $scope.username;
-				params.gid = $scope.selectedGroup;
-				params.rating = $scope.userRating;
-
-				alert(params.lon + ',' + params.lat);
-
-				//Check if the photo is to be made public or not.
-				if (document.getElementById('checkbox').checked)
-					params.pub = 1;
-				else
-					params.pub = 0;
-
-				options.params = params;
-
-				var ft = new FileTransfer();
-				ft.upload(imageURI, "http://paddycull.com/map/php/upload.php", win, fail, options, true);
-
-
-		        alert("I was taken by at Latitude:" + elat + " Longitude: " + elon );
+	    	else{
+		        params.lat = toDecimal(elat, elatRef);
+		        params.lon = toDecimal(elon, elonRef);
 		    }
-	    });
+
+			params.uname = $scope.username;
+			params.gid = $scope.selectedGroup;
+			params.rating = $scope.userRating;
+
+			alert(params.lon + ',' + params.lat);
+
+			//Check if the photo is to be made public or not.
+			if (document.getElementById('checkbox').checked)
+				params.pub = 1;
+			else
+				params.pub = 0;
+
+			options.params = params;
+
+			var ft = new FileTransfer();
+			ft.upload(imageURI, "http://paddycull.com/map/php/upload.php", win, fail, options, true);
+
+	    }
+
+		//These functions are called when the photo gets uploaded successfully.
+		function win(r) {
+		   alert("success");
+		   alert("Sent = " + r.bytesSent);
+		   $state.go("tab.dash");
+		}
+
+		function fail(error) {
+		   alert("error");
+		   switch (error.code) {
+		     case FileTransferError.FILE_NOT_FOUND_ERR:
+		        alert("Photo file not found");
+		        break;
+		     case FileTransferError.INVALID_URL_ERR:
+		       alert("Bad Photo URL");
+		       break;
+		     case FileTransferError.CONNECTION_ERR:
+		       alert("Connection error");
+		       break;
+		   }
+		   alert("An error has occurred: Code = " + error.code);
+		}
 	}
 
 	//This function converts the EXIF co-ordinates into decimal co-ordinates.

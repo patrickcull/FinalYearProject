@@ -1,6 +1,6 @@
 <ion-view title="Groups">
 	<ion-nav-buttons side="right">
-	  <button class="button icon ion-person-add button-light" ng-click="openModal(1)" >
+<!--  	  <button class="button icon ion-person-add button-light" ng-click="openModal(1)" >
 	    Join Group
 	  </button>
 	</ion-nav-buttons>
@@ -8,14 +8,28 @@
 	<ion-nav-buttons side="left">
 	  <button class="button icon ion-plus-circled button-light" ng-click="openModal(2)" >
 	    Create Group
-	  </button>
-	</ion-nav-buttons>
+	  </button> -->
 
+	</ion-nav-buttons> 
 	<ion-content>
+		<button class="groupsButton fleft" ng-click="openModal(1)"> 
+			<i class = "icon ion-person-add"></i>
+			Join Group
+		</button>
+
+
+		<button class="groupsButton fright" ng-click="openModal(2)"> 
+			<i class = "icon ion-plus-circled"></i>
+			Create Group
+		</button>
+
+		<br clear="both">
+
 		<ion-list>
-		<div class="item item-divider">
-    		Group Name - Group ID
-  		</div>
+			<div class="item item-divider">
+	    		Group Name - Group ID
+	  		</div>
+
 			<ion-item href="#/tab/group/{{group.GID}}?gname={{group.gname}}" ng-repeat="group in groups | filter:searchFilter | orderBy:'gname'" item="groups">
 			    <div class="item-button-right">
 			     {{group.gname}} -
@@ -26,6 +40,5 @@
 			  	</div>
 		  	</ion-item>
 		</ion-list>
-
   	</ion-content>
 </ion-view>

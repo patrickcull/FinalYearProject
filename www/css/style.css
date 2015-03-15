@@ -18,6 +18,34 @@ body{
 
 }
 
+.groupsButton{
+	width:50%;
+	background-color: #888;
+	height:40px;
+	margin-top:0px; 
+	display: block;
+	background-color: #2980b9;
+	margin-top: 0px;
+	border:none;
+	color:white;
+}
+
+.groupsButton i{
+	font-size: 25px;
+	line-height: 40px;
+	vertical-align: middle;
+}
+
+.fleft{
+	float:left;
+	border-right:1px solid rgba(255, 255, 255,0.3);
+}
+
+.fright{
+	float:right;
+}
+
+
 #uploadButton{
 	position: absolute;
 	top:0;
@@ -30,6 +58,8 @@ body{
 	bottom:0px;
 	width:20%;
 	margin-left: 40%;
+	background-color:#27ae60 !important;
+	color:white;
 }
 
 .modal{
@@ -95,5 +125,5 @@ ion-header-bar{
 }
 
 .rating .filled {
-  color: #ef4e3a; //#21568b
+  color: #ef4e3a;
 }

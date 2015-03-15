@@ -31,6 +31,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 //Ensures the interface is consistent across multiple platforms.
 .config(['$ionicConfigProvider', function($ionicConfigProvider) {
   $ionicConfigProvider.tabs.position('bottom'); //other values: top
+  $ionicConfigProvider.navBar.alignTitle('center');
 
 }])
 
